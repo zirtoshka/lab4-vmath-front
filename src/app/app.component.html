@@ -1,4 +1,5 @@
 <div class="disp">
   <app-graph #graphComponent></app-graph>
-  <app-points #pointsComponent (choseEvent)="graphComponent.approxDraw($event)" ></app-points>
+  <app-points #pointsComponent (choseEvent)="graphComponent.approxDraw($event)"
+              (newPointEvent)="graphComponent.allPointsDraw($event)" ></app-points>
 </div>

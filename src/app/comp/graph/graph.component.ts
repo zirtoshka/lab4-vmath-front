@@ -2,6 +2,7 @@ import {Component} from '@angular/core';
 import * as JXG from 'jsxgraph';
 import {GeometryElement} from "jsxgraph";
 import {Respon} from "../../response";
+import {Point} from "../../Point";
 
 @Component({
   selector: 'app-graph',
@@ -14,11 +15,10 @@ import {Respon} from "../../response";
 export class GraphComponent {
   board!: JXG.Board;
   lines: GeometryElement[] = [];
-  x = -3;
 
 
   ngOnInit() {
-    this.board = this.boardInit(-5, 5, 5, -5);
+    this.board = this.boardInit(5);
   }
 
   linearApproxDraw(ab: number[], left:number, right:number){
@@ -37,15 +37,42 @@ export class GraphComponent {
       strokeWidth: 2
     }));
   }
+
+  pointDraw(xy: number[]){
+        this.lines.push(this.board.create('point', [xy[0], xy[1]], {
+          name: '', fixed: true, color: "red", fillOpacity: 1, visible: true,
+          strokewidth: 1
+        }));
+  }
+  allPointsDraw(point: Point){
+    const maxBoard = this.maxBoardAbs(point.x,point.y);
+    console.log(maxBoard)
+    this.cleanBoard();
+    this.board = this.boardInit(maxBoard+3);
+
+    let n=point.x.length;
+    for (let i = 0; i < n ; i++) {
+      this.pointDraw([point.x[i],point.y[i]]);
+    }
+
+  }
   approxDraw(resp: Respon){
-    this.linearApproxDraw(resp.linear,-3,3);
+    console.log("approsaasd")
+    this.linearApproxDraw(resp.linear,-100,100);
     this.squareApproxDraw(resp.square,-3,3);
 
   }
 
-  boardInit(a: number, b: number, c: number, d: number) {
+  cleanBoard(){
+    for (const object of this.lines) {
+      this.board.removeObject(object);
+    }
+  }
+
+  boardInit(a:number) {
+    // -5, 5, 5, -5
     return JXG.JSXGraph.initBoard('jxgbox', {
-      boundingbox: [a, b, c, d],
+      boundingbox: [-a, a, a, -a],
       grid: true,
       showCopyright: false,
       axis: true,
@@ -91,4 +118,12 @@ export class GraphComponent {
     });
   }
 
+
+  maxBoardAbs(arr1:number[], arr2:number[]):number{
+    const maxAbsValue = Math.max(
+        Math.max(...arr1.map(Math.abs)),
+        Math.max(...arr2.map(Math.abs))
+    );
+    return maxAbsValue;
+  }
 }
