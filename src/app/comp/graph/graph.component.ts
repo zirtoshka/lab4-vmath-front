@@ -1,6 +1,7 @@
 import {Component} from '@angular/core';
 import * as JXG from 'jsxgraph';
 import {GeometryElement} from "jsxgraph";
+import {Respon} from "../../response";
 
 @Component({
   selector: 'app-graph',
@@ -9,13 +10,36 @@ import {GeometryElement} from "jsxgraph";
   templateUrl: './graph.component.html',
   styleUrl: './graph.component.css'
 })
+
 export class GraphComponent {
   board!: JXG.Board;
   lines: GeometryElement[] = [];
+  x = -3;
+
 
   ngOnInit() {
     this.board = this.boardInit(-5, 5, 5, -5);
+  }
 
+  linearApproxDraw(ab: number[], left:number, right:number){
+    this.lines.push(this.board.create('functiongraph', [function (x: number) {
+      return ab[0]*x+ab[1];
+    }, left, right], {
+      strokeColor: '#6600ff',
+      strokeWidth: 2// Красный цвет для линии графика
+    }));
+  }
+  squareApproxDraw(abc: number[], left:number, right:number){
+    this.lines.push(this.board.create('functiongraph', [function (x: number) {
+      return abc[0]+abc[1]*x+abc[2]*x*x;
+    }, left, right], {
+      strokeColor: '#00ff22',
+      strokeWidth: 2
+    }));
+  }
+  approxDraw(resp: Respon){
+    this.linearApproxDraw(resp.linear,-3,3);
+    this.squareApproxDraw(resp.square,-3,3);
 
   }
 
