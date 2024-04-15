@@ -1,7 +1,7 @@
 import {Injectable} from "@angular/core";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Respon} from "./response";
-
+import {Req} from "./request";
 
 @Injectable({
   providedIn: 'root'
@@ -13,11 +13,10 @@ export class AppService {
   constructor(private httpClient: HttpClient) {
   }
 
-  approxRequest(){
-    let points = 0
+  approxRequest(req: Req ){
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
 
     return this.httpClient
-      .post<Respon>(`${this.baseUrl}`, JSON.stringify(points), { headers });
+      .post<Respon>(`${this.baseUrl}`, JSON.stringify(req), { headers });
   }
 }

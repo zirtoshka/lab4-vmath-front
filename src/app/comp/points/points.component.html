@@ -30,3 +30,6 @@
   </div>
 </div>
 <button (click)="addPoint()">+</button>
+
+
+<button type="submit" [disabled]="!checkPoints() " (click)="sendPoints()">аппроксимация!</button>
