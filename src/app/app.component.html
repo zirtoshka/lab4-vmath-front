@@ -1,5 +1,18 @@
 <div class="disp">
   <app-graph #graphComponent></app-graph>
+
+
   <app-points #pointsComponent (choseEvent)="graphComponent.approxDraw($event)"
-              (newPointEvent)="graphComponent.allPointsDraw($event)" ></app-points>
+              (newPointEvent)="graphComponent.allPointsDraw($event)"></app-points>
+</div>
+  <app-filik #filikComponent (choseEvent)="graphComponent.approxDraw($event)"
+             (newPointEvent)="graphComponent.allPointsDraw($event)"></app-filik>
+  <div>
+    <h4>Пример файла с данными</h4>
+    <p>"x":[1.1,2.3,3.7,4.5,5.4,6.8,7.5],<br>
+      "y":[2.73,5.12,7.74,8.91,10.59,12.75,13.43]</p>
+  </div>
+<h4>Результат:</h4>
+<div *ngFor="let s of appService.dataUser">
+  {{s}}
 </div>

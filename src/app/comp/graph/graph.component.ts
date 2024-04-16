@@ -15,6 +15,7 @@ import {Point} from "../../Point";
 export class GraphComponent {
   board!: JXG.Board;
   lines: GeometryElement[] = [];
+  maxBoard!:number;
 
 
   ngOnInit() {
@@ -25,7 +26,7 @@ export class GraphComponent {
     this.lines.push(this.board.create('functiongraph', [function (x: number) {
       return ab[0]*x+ab[1];
     }, left, right], {
-      strokeColor: '#6600ff',
+      strokeColor: '#ff0000',
       strokeWidth: 2// Красный цвет для линии графика
     }));
   }
@@ -33,7 +34,43 @@ export class GraphComponent {
     this.lines.push(this.board.create('functiongraph', [function (x: number) {
       return abc[0]+abc[1]*x+abc[2]*x*x;
     }, left, right], {
-      strokeColor: '#00ff22',
+      strokeColor: '#ff9100',
+      strokeWidth: 2
+    }));
+  }
+
+  thirdApproxDraw(ind: number[], left:number, right:number){
+    this.lines.push(this.board.create('functiongraph', [function (x: number) {
+      return ind[0]+ind[1]*x+ind[2]*x*x+ind[3]*Math.pow(x,3);
+    }, left, right], {
+      strokeColor: '#f7ff00',
+      strokeWidth: 2
+    }));
+  }
+
+  powerApproxDraw(ind: number[], left:number, right:number){
+    this.lines.push(this.board.create('functiongraph', [function (x: number) {
+      return ind[0]*Math.pow(x,ind[1]);
+    }, left, right], {
+      strokeColor: '#00ff3c',
+      strokeWidth: 2
+    }));
+  }
+
+  exponentApproxDraw(ind: number[], left:number, right:number){
+    this.lines.push(this.board.create('functiongraph', [function (x: number) {
+      return ind[0]*Math.exp(x*ind[1]);
+    }, left, right], {
+      strokeColor: '#0015ff',
+      strokeWidth: 2
+    }));
+  }
+
+  logarithmicApproxDraw(ind: number[], left:number, right:number){
+    this.lines.push(this.board.create('functiongraph', [function (x: number) {
+      return ind[0]*Math.log(x)+ind[1];
+    }, left, right], {
+      strokeColor: '#8c00ff',
       strokeWidth: 2
     }));
   }
@@ -45,10 +82,11 @@ export class GraphComponent {
         }));
   }
   allPointsDraw(point: Point){
-    const maxBoard = this.maxBoardAbs(point.x,point.y);
-    console.log(maxBoard)
+
+
+    this.maxBoard = this.maxBoardAbs(point.x,point.y);
     this.cleanBoard();
-    this.board = this.boardInit(maxBoard+3);
+    this.board = this.boardInit(this.maxBoard+3);
 
     let n=point.x.length;
     for (let i = 0; i < n ; i++) {
@@ -57,9 +95,13 @@ export class GraphComponent {
 
   }
   approxDraw(resp: Respon){
-    console.log("approsaasd")
-    this.linearApproxDraw(resp.linear,-100,100);
-    this.squareApproxDraw(resp.square,-3,3);
+    this.linearApproxDraw(resp.linear,-this.maxBoard-4,this.maxBoard+4);
+    this.squareApproxDraw(resp.square,-this.maxBoard-4,this.maxBoard+4);
+    this.thirdApproxDraw(resp.third,-this.maxBoard-4,this.maxBoard+4);
+    this.powerApproxDraw(resp.power,-this.maxBoard-4,this.maxBoard+4);
+    this.exponentApproxDraw(resp.exponent,-this.maxBoard-4,this.maxBoard+4);
+    this.logarithmicApproxDraw(resp.logarithmic,-this.maxBoard-4,this.maxBoard+4);
+
 
   }
 
@@ -120,10 +162,12 @@ export class GraphComponent {
 
 
   maxBoardAbs(arr1:number[], arr2:number[]):number{
+    console.log(2)
     const maxAbsValue = Math.max(
         Math.max(...arr1.map(Math.abs)),
         Math.max(...arr2.map(Math.abs))
     );
+    console.log(3)
     return maxAbsValue;
   }
 }
